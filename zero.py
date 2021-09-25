@@ -5,7 +5,7 @@ def zero(principal, comp, price):
     return np.log(principal/price)/comp
 
 
-def bootstrap(principal, coupon, comp, price, previous):
+def bootstrap(principal, comp, coupon, price, previous):
     _sum = 0
     freq = comp/(len(previous)+1)
     time = freq
@@ -18,10 +18,10 @@ def bootstrap(principal, coupon, comp, price, previous):
 def zeros(data):
     zero_rate = []
     for bond in data:
-        if bond[2] == 0:
-            zero_rate.append(zero(bond[0], bond[1], bond[3]))
+        if bond[1] == 0:
+            zero_rate.append(zero(bond[0], bond[2], bond[3]))
         else:
-            zero_rate.append(bootstrap(bond[0], bond[2], bond[1], bond[3], zero_rate))
+            zero_rate.append(bootstrap(bond[0], bond[1], bond[2], bond[3], zero_rate))
     return zero_rate
 
 

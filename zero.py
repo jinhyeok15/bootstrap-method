@@ -25,6 +25,19 @@ def zeros(data):
     return zero_rate
 
 
+def forward_rate(data, delta):
+    fr = []
+    i = 0
+    for bond in data:
+        if i == 0:
+            fr.append(zero(bond[0], bond[1], bond[3]))
+        else:
+            pre_price = data[i-1][3]
+            fr.append(np.log(pre_price/bond[3])/delta)
+        i += 1
+    return fr
+
+
 if __name__ == "__main__":
     _data = [
         [100, 0.50, 0, 94.9],
@@ -39,4 +52,11 @@ if __name__ == "__main__":
         [100, 1.50, 4, 94.84],
         [100, 2.00, 5, 97.12]
     ]
-    print(zeros(data23))
+
+    data0 = [
+        [100, 0.50, 0, 99.5],
+        [100, 1.00, 0, 98.3],
+        [100, 1.50, 0, 97.1]
+    ]
+    print(zeros(data0))
+    print(forward_rate(data0, 0.5))

@@ -64,6 +64,10 @@ def icm_price(p, d, icm_y):
     return -d*icm_y*p
 
 
+def forward_price(asset_price, zero_rate, maturity):
+    return asset_price*np.exp(zero_rate*maturity)
+
+
 if __name__ == "__main__":
     _data = [
         [100, 0.50, 0, 94.9],
@@ -72,60 +76,8 @@ if __name__ == "__main__":
         [100, 2.00, 6, 101.6]
     ]
 
-    data23 = [
-        [100, 0.50, 0, 94.00],
-        [100, 1.00, 0, 89.00],
-        [100, 1.50, 4, 94.84],
-        [100, 2.00, 5, 97.12]
-    ]
-
-    data0 = [
-        [100, 0.50, 0, 99.5],
-        [100, 1.00, 0, 98.3],
-        [100, 1.50, 0, 97.1]
-    ]
-    # print(zeros(data0))
-
-    # 4.14 answer
-    _zero_rate0 = [0.02, 0.03, 0.037, 0.042, 0.045]
-    print("4.14: "+str(forward_rate(_zero_rate0)))
-    print("----------------------------------------")
-
-    # 4.22 answers
-    B = bond_price(100, 100*0.08, 0.11, 5, 1.0)
-    print("4.22-a: "+str(B))
-    D = duration(100, 100*0.08, 0.11, 5, 1.0)
-    print("4.22-b: "+str(D))
-    icm_p = icm_price(B, D, -0.002)
-    print("4.22-c: The increment is " + str(icm_p))
-    print("4.22-c: The bond price becomes " + str(B+icm_p))
-    change = bond_price(100, 100*0.08, 0.108, 5, 1.0)
-    print("4.22-d: " + str(change))
-    print("----------------------------------------")
-
-    # 4.35 answers
-    print("4.35")
-    print("(a)")
-    A_price = bond_price(2000, 0, 0.1, 1, 1) + bond_price(6000, 0, 0.1, 10, 1)
-    print("The price of A: "+str(A_price))
-    A_duration = (1*2000*np.exp(-0.1*1)+10*6000*np.exp(-0.1*10))/A_price
-    print("portfolio A duration is " + str(A_duration))
-    B_price = bond_price(5000, 0, 0.1, 5.95, 1)
-    print("The price of B: "+str(B_price))
-    B_duration = duration(5000, 0, 0.1, 5.95, 1)
-    print("portfolio B duration is " + str(B_duration))
-
-    print("(b)")
-    icm_A = icm_price(A_price, A_duration, 0.001)
-    print("change percentage of price A after 0.1% increase in yields: " + str((A_price+icm_A)/A_price-1))
-    icm_B = icm_price(B_price, B_duration, 0.001)
-    print("change percentage of price B after 0.1% increase in yields: " + str((B_price+icm_B)/B_price-1))
-
-    print("(c)")
-    icm_case_c = icm_price(B_price, B_duration, 0.05)
-    answer = (B_price+icm_case_c)/B_price-1
-    print(answer)
-    icm_case_d = icm_price(A_price, A_duration, 0.05)
-    compare = (A_price+icm_case_d)/A_price-1
-    print(compare)
-    print("----------------------------------------")
+    print(forward_price(1.05, 0.01, 2/12))
+    pv = lambda x, y, z: x*np.exp(-y*z)
+    storage_cost = forward_price(sum([25, pv(0.06, 0.05, 3/12), pv(0.06, 0.05, 6/12), pv(0.06, 0.05, 9/12)]),
+                                 0.05, 9/12)
+    print(storage_cost)
